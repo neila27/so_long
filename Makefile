@@ -10,12 +10,12 @@ SRC =	main.c \
 all:	$(NAME)
 
 %.o : %.c
-	${CC} -c -o $@ $^ -I./libft ${CFLAGS}
+	${CC} -c -o $@ $^ -I./libft ${CFLAGS} -Imlx
 	
 $(NAME):	$(OBJ) 
-			$(CC) $(OBJ) -Imlx -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
-			${MAKE} -C libft	
-			gcc -o ${NAME} ${OBJ} -L./libft -lft
+			${MAKE} -C libft 
+			${MAKE} -C mlx	
+			$(CC) -o ${NAME} ${OBJ} -Lmlx -lmlx -framework OpenGL -framework AppKit -L./libft -lft
 
 libft:
 			${MAKE} -C libft
@@ -23,10 +23,12 @@ libft:
 clean:
 			$(RM) $(OBJ)
 			$(MAKE) -C libft clean
+			$(MAKE) -C mlx clean
 
 fclean:		clean
 			$(RM) $(NAME)
 			$(MAKE) -C libft fclean
+			$(MAKE) -C mlx clean
 
 re:			fclean all
 
