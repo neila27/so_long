@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/05/25 14:59:05 by Probook          ###   ########.fr       */
+/*   Updated: 2023/05/30 16:33:32 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,14 @@
 typedef struct s_list_data {
 
 }			t_list_data;
+
+typedef enum e_game {
+	FLOOR,
+	WALL,
+	COIN,
+	EXIT,
+	PLAYER,
+	IS_ENTRY,
+}	t_game;
 
 #endif
