@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/05/31 16:34:41 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/08 12:43:30 by Probook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	fail(char *str)
 	exit(1);
 }
 
-char *read_map(int *map)
+char *read_map(char *map)
 {
 	char	buff[255];
 	int		fd;
 	char	*res;
 
 	res = NULL;
-	fd = open(*map, O_RDONLY);
+	fd = open(map, O_RDONLY);
 	int nbr = read(fd, buff, 255);
 	while (nbr)
 	{
@@ -36,15 +36,14 @@ char *read_map(int *map)
 	return (res);
 }
 
-t_game **calc_len(char *str, int *x, int *y)
+void calc_len(char *str, int *x, int *y)
 {
-	int i = 0;
 	*x = 0;
 	*y = 0;
 	int tmp = 0;
 
 	if (str == NULL)
-		return (NULL);
+		fail("the string is empty");
 	while (str)
 	{
 		if (*str == '\n')
@@ -62,8 +61,6 @@ t_game **calc_len(char *str, int *x, int *y)
 		tmp++;
 	}
 	(*y)++;
-
-
 }
 
 t_game **parse(char *str, int *x, int *y)
@@ -106,43 +103,17 @@ void floodfill(t_game **game, int x_len, int y_len, int x, int y)
 	floodfill(game, x_len, y_len, x + 1, y);
 }
 
-
-int correct_map(int argc, char **argv, t_game **map, int y_len, int x_len, int y, int x)
-{
-	t_game **cpy ;
-
-	if (argc != 1)
-		fail("more than 1 arg\n");
-	else if (wall_correct(map, y_len, x_len) == 1)
-		fail("not enough walls\n");
-	else if (reverse_strncmp(argv[1], ".ber", 4) != 0)
-		fail("not a .ber map\n");
-	else if (only_one_element(map, x_len, y_len, PLAYER)
-	|| only_one_element(map, x_len, y_len, EXIT) != 0)
-		fail("more than 1 door/player\n");
-	cpy = copy_map(map, y_len, x_len);
-	floodfill(cpy, x_len, y_len, x, y);
-	else if (is_map_empty(cpy, y_len, x_len, COIN) != 0)
-		fail("coin\n");
-	else if (is_map_empty(cpy, y_len, x_len, EXIT) != 0)
-		fail("exit\n");
-	else if (is_map_empty(cpy,y_len, x_len, PLAYER) != 0)
-		fail("player\n");
-	return (0);
-}
-
 t_game **copy_map(t_game **map, int y_len, int x_len)
 {
 	t_game **cpy;
 	int y;
-	int x;
 	cpy = ft_calloc(sizeof(t_game *), y_len);
 	y = 0;
 	while (y < y_len)
 	{
 	
 		cpy[y] = ft_calloc(sizeof(t_game *), x_len);
-		ft_memcpy(cpy[y], map[y], x);
+		ft_memcpy(cpy[y], map[y], x_len);
 		y++;
 	}
 	return (cpy);
@@ -241,46 +212,95 @@ int	reverse_strncmp(const char *s1, const char *s2, size_t n)
 	return ((unsigned char) s1[i] - (unsigned char) s2[i]);
 }
 
-int	 get_xpm(void *mlx, t_image *image, char *path_name)
+int correct_map(int argc, char **argv, t_game **map, int y_len, int x_len, int y, int x)
 {
-	char a[2][3];
-	image->image = (mlx, path_name, &image->x_len, &image->y_len);
-	if (!image->image)
-		return (1);
+	t_game **cpy ;
+
+	if (argc != 1)
+		fail("more than 1 arg\n");
+	else if (wall_correct(map, y_len, x_len) == 1)
+		fail("not enough walls\n");
+	else if (reverse_strncmp(argv[1], ".ber", 4) != 0)
+		fail("not a .ber map\n");
+	else if (only_one_element(map, x_len, y_len, PLAYER)
+	|| only_one_element(map, x_len, y_len, EXIT) != 0)
+		fail("more than 1 door/player\n");
+	cpy = copy_map(map, y_len, x_len);
+	floodfill(cpy, x_len, y_len, x, y);
+	if (is_map_empty(cpy, y_len, x_len, COIN) != 0)
+		fail("coin\n");
+	else if (is_map_empty(cpy, y_len, x_len, EXIT) != 0)
+		fail("exit\n");
+	else if (is_map_empty(cpy,y_len, x_len, PLAYER) != 0)
+		fail("player\n");
 	return (0);
 }
 
-void	get_load_image(t_data *data)
+int	 get_xpm(void *mlx, t_image *image, char *path_name)
 {
-	if (get_xpm(data->mlx, data->asset.floor, "./assets/floor.xpm"
-	|| get_xpm(data->mlx, data->asset.wall, "./assets/wall.xpm"
-	|| data->mlx, data->asset.coin, "./assets/coin.xpm" 
-	|| data->mlx, data->asset.exit, "./assets/exit.xpm"
-	|| data->mlx, data->asset.player, "./assets/player.xpm" != 0)
+	image->image = mlx_xpm_file_to_image(mlx, path_name, &image->x_len, &image->y_len);
+	if (!image->image)
+		return (1);
+	
+	return (0);
+}
+
+int	get_load_image(t_data *data)
+{
+	if (get_xpm(data->mlx, &data->asset.floor, "./assets/floor.xpm") != 0
+	|| get_xpm(data->mlx, &data->asset.wall, "./assets/wall.xpm") != 0
+	|| get_xpm(data->mlx, &data->asset.coin, "./assets/coin.xpm") != 0
+	|| get_xpm(data->mlx, &data->asset.exit, "./assets/exit.xpm") != 0
+	|| get_xpm(data->mlx, &data->asset.player, "./assets/player.xpm") != 0)
 		fail("error while loading image\n");
+	return (0);
 }
 
-void	image_adress(t_data *data)
-{
-	data->addr = mlx_get_data_addr(data.img, &data.bits_pix, &data.image.y_len,
-								&img.endian);
-}
-
-void	my_mlx_pixel_put(t_data *data, int x, int y)
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->y_len + x * (data->bits_pix / 8));
-	*(unsigned int*)dst = data.image.color;
+	dst = data->addr + (y * data->line_len + x * (data->bits_pix / 8));
+	*(unsigned int*)dst = color;
+}
+
+int	close_win(t_data *data);
+{
+	mlx_destroy_window(data->mlx, data->mlx_win);
+	return (0);
 }
 
 int	main(void)
 {
 	t_data	data;
+	t_data	tmp_img;
 
 	data.mlx = mlx_init();
-	data.mlx_win = mlx_new_window(mlx, 64, 64, "game");
-	mlx_loop(mlx);
-	get_load_image(&data);
+	if (data.mlx == NULL)
+		fail("error init mlx");
+
+	data.mlx_win = mlx_new_window(data.mlx, HEIGHT, WIDTH, "so_long");
+	if (data.mlx_win == NULL)
+		fail("error window creation");
+	mlx_key_hook();
+	data.image = mlx_new_image(data.mlx, HEIGHT, WIDTH); 
+	data.addr = mlx_get_data_addr(data.image, &data.bits_pix, &data.line_len, &data.endian);
+
+	tmp_img.image = get_load_image(&data);
+	if (tmp_img.image == NULL)
+		fail("error while loading image");
 	
+	tmp_img.addr = mlx_get_data_addr(tmp_img.image, &tmps_img.bits_pix, &tmp_img.line_len, &tmps_img.endian);
+
+	my_mlx_pixel_put(tmp_img.image, 5, 5, 0x00FF0000);
+
+	mlx_put_image_to_window(data.mlx, data.mlx_win, data.image, 0, 0);
+	mlx_loop(data.mlx);
+
+	mlx_destroy_image(data.mlx, tmp_img.image);	
+	mlx_destroy_image(data.mlx, data.image);
+	mlx_hook(data.mlx_win, ON_DESTROY, 0, close_win, &data);
+	mlx_destroy(data.mlx);
+
+	return (0);
 }

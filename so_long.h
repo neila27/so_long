@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/05/31 16:34:43 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/08 12:43:28 by Probook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,30 +21,33 @@
 # include "libft.h"
 # include "mlx.h"
 
+# define HEIGHT 1920 
+# define WIDTH 1080
+
 typedef struct s_image {
 	int		x_len;
 	int		y_len;
 	void	*image;
-	int		color
+	int		color;
 } t_image;
 
 typedef struct	s_asset {
-	t_images	floor;
-	t_images	wall;
-	t_images	coin;
-	t_images	exit;
-	t_images	player;
+	t_image	floor;
+	t_image	wall;
+	t_image	coin;
+	t_image	exit;
+	t_image	player;
 } t_asset;
 
 typedef struct s_data {
 	void	*mlx;
 	void	*mlx_win;
 	t_asset	asset;
-	t_image image;
-	char *addr;
-	int bits_pix;
-	int	line_len;
-	int endian;
+	char	*addr;
+	int		bits_pix;
+	int		line_len;
+	int		endian;
+	void	*image;
 }			t_data;
 
 typedef enum e_game {
@@ -55,5 +58,15 @@ typedef enum e_game {
 	PLAYER,
 	IS_ENTRY,
 }	t_game;
+
+typedef enum e_key {
+	ON_KEYDOWN = 2,
+	ON_KEYUP = 3,
+	ON_MOUSEDOWN = 4,
+	ON_MOUSEUP = 5,
+	ON_MOUSEMOVE = 6,
+	ON_EXPOSE = 12,
+	ON_DESTROY = 17
+}	t_key;
 
 #endif
