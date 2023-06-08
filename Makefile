@@ -1,6 +1,6 @@
 NAME		= so_long
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -g3 
+CFLAGS		= -Wall -Wextra -Werror -g3 -fsanitize=address
 RM			= rm -rf
 
 OBJ			= $(SRC:.c=.o)
@@ -15,7 +15,7 @@ all:	$(NAME)
 $(NAME):	$(OBJ) 
 			${MAKE} -C libft 
 			${MAKE} -C mlx	
-			$(CC) -o ${NAME} ${OBJ} -Lmlx -lmlx -framework OpenGL -framework AppKit -L./libft -lft
+			$(CC) ${CFLAGS} -o ${NAME} ${OBJ} -Lmlx -lmlx -framework OpenGL -framework AppKit -L./libft -lft
 
 libft:
 			${MAKE} -C libft
