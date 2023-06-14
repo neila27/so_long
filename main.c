@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/08 16:31:46 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/13 15:27:54 by Probook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ t_game **parse(char *str, int *x, int *y)
 		i++;
 	}
 	return (res);
-
 
 void floodfill(t_game **game, int x_len, int y_len, int x, int y)
 {
@@ -269,6 +268,19 @@ int	get_load_image(t_data *data, int x, int y)
 		|| get_xpm(data->mlx, &data->asset.player, "./assets/player.xpm") != 0)
 		return (1);
 	return (0);
+}
+
+t_game move_player(t_game player)
+{
+	if (key == 'w') 
+ 	;
+	else if (key == 'a') 
+ 	;
+ 	else if (key == 's') 
+ 	;
+ 	else if (key == 'd') 
+  	
+}
 }
 
 int	main(void)
