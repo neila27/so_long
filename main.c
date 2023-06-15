@@ -6,7 +6,7 @@
 /*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/13 15:27:54 by Probook          ###   ########.fr       */
+/*   Updated: 2023/06/14 16:30:29 by Probook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ t_game **parse(char *str, int *x, int *y)
 		i++;
 	}
 	return (res);
+}
 
 void floodfill(t_game **game, int x_len, int y_len, int x, int y)
 {
@@ -227,6 +228,7 @@ int correct_map(int argc, char **argv, t_game ***map, int y_len, int x_len)
 	else if (reverse_strncmp(argv[1], ".ber", 4) != 0)
 		fail("not a .ber map\n");
 	read_map(argv[1]);
+	calc_len(argv[1], x_len, y_len);
 	parse(argv[1], x_len, y_len);
 	if (wall_correct(map, y_len, x_len) == 1)
 		fail("not enough walls\n");
@@ -244,10 +246,24 @@ int correct_map(int argc, char **argv, t_game ***map, int y_len, int x_len)
 	return (0);
 }
 
-int	close_win(int keycode, t_data *data)
+fonction print map genre y_len x 64
+keyhook fonction
 {
-	mlx_destroy_window(data->mlx, data->mlx_win);
-	return (0);
+	if (map[y][x] == COIN) press touche E ????????????????????????????????????????????
+		map[x][y] == FLOOR
+}
+//void keypad(t_game )
+{
+    if (key == KEY_W)
+		pla = player[y + 1][x];
+    else if (key == KEY_S)
+		player = player[y - 1][x];
+    else if (key == KEY_A)
+		player = player[y][x - 1];
+    else if (key == KEY_D)
+		player = player[y][x + 1];
+	else if (key == E) ???????????????????????????????????????????????????????????????
+return (0);
 }
 
 int	 get_xpm(void *mlx, t_image *image, char *path_name)
@@ -270,37 +286,22 @@ int	get_load_image(t_data *data, int x, int y)
 	return (0);
 }
 
-t_game move_player(t_game player)
-{
-	if (key == 'w') 
- 	;
-	else if (key == 'a') 
- 	;
- 	else if (key == 's') 
- 	;
- 	else if (key == 'd') 
-  	
-}
-}
-
-int	main(void)
+int	main(int argc, char **argv)
 {
 	t_data	data;
-
-	parse() 
 
 	data.mlx = mlx_init();
 	if (data.mlx == NULL)
 		fail("error init mlx");
+	ft_correct_map(argc, argv, map, y_len, x_len);
 	data.mlx_win = mlx_new_window(data.mlx, HEIGHT, WIDTH, "so_long");
 	if (data.mlx_win == NULL)
 		fail("error window creation");
-	mlx_hook(data.mlx_win, ON_DESTROY, 0, close_win, &data);
+	mlx_hook(data.mlx_win, ON_DESTROY, 0, close_win, &data);//pour X la fenetre
+	mlx_hook(data.mlx_win, )//pour exit 
 	mlx_put_image_to_window(data.mlx, data.mlx_win, data.asset.coin.image, 0, 0);
 	mlx_loop(data.mlx);
-
 	mlx_destroy_image(data.mlx, data.image);
 	mlx_destroy_window(data.mlx, data.mlx_win);
-
 	return (0);
 }

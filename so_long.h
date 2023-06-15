@@ -6,7 +6,7 @@
 /*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/13 11:56:45 by Probook          ###   ########.fr       */
+/*   Updated: 2023/06/14 16:30:34 by Probook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef enum e_key {
 	KEY_S,
 	KEY_A,
 	KEY_D,
+	ON_DESTROY = 17,
 }	t_key;
 
 #endif
