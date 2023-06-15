@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/15 12:21:17 by Probook          ###   ########.fr       */
+/*   Updated: 2023/06/15 15:28:49 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ char *read_map(char *map)
 		return (NULL);
 	int nbr = read(fd, buff, 255);
 	if (nbr <= 0)
-	(
-		close(fd)
+	{
+		close(fd);
 		return (NULL);
-	)
+	}
 	while (nbr)
 	{
 		res = ft_strjoin(res, buff);
@@ -51,18 +51,18 @@ void calc_len(char *str, int *x, int *y)
 
 	if (str == NULL)
 		fail("the string is empty");
-	while (str)
+	while (*str)
 	{
 		if (*str == '\n')
 		{
 			if (*x == 0)
 				*x = tmp;
 			else if (*x != tmp)
-				fail("not rectan\n");
+				fail("not rectan\n");	
 			(*y)++;
-			tmp = 0;
+			tmp = -1;
 		}
-		else if (*str !=  '1' || *str != '0' || *str != 'E' || *str != 'C' || *str != 'P')
+		else if (*str !=  '1' && *str != '0' && *str != 'E' && *str != 'C' && *str != 'P' && *str != '\n')
 			fail("unknown char in the map\n");
 		str++;
 		tmp++;
@@ -70,16 +70,16 @@ void calc_len(char *str, int *x, int *y)
 	(*y)++;
 }
 
-t_game **parse(char *str, int *x, int *y)
+t_game **parse(char *str, int x, int y)
 {
-	t_game **res = ft_calloc(sizeof(t_game *), *y);
+	t_game **res = ft_calloc(sizeof(t_game *), y);
 	int z;
 	int i  = 0;
-	while (i < *y)
+	while (i < y)
 	{
-		res[i] = ft_calloc(sizeof(t_game), *x);
+		res[i] = ft_calloc(sizeof(t_game), x);
 		z = 0;
-		while(z < *x)
+		while(z < x)
 		{
 			if (*str == '0')
 				res[i][z] = FLOOR;
@@ -90,10 +90,11 @@ t_game **parse(char *str, int *x, int *y)
 			else if (*str == 'C')
 				res[i][z] = COIN;
 			else if (*str == 'E')
-				res[i][z] = EXIT;	
+				res[i][z] = EXIT;
 			z++;
 			str++;
 		}
+		str++;
 		i++;
 	}
 	return (res);
@@ -203,66 +204,75 @@ int only_one_element(t_game **map, int x_len, int y_len, t_game element)
 
 int	reverse_strncmp(const char *s1, const char *s2, size_t n)
 {
-	size_t	i;
+	size_t	i1;
+	size_t	i2;
 
-	i = ft_strlen(s1) - 1;
+	i1 = ft_strlen(s1) - 1;
+	i2 = ft_strlen(s2) - 1;
 	if (n == 0)
 		return (0);
-	while (s1[i] && s2[i] && n)
+	while (i1 >= 0 && i2 >= 0 && n)
 	{
-		if (s1[i] != s2[i])
+		if (s1[i1] != s2[i2])
 			break ;
-		i--;
+		i1--;
+		i2--;
 		n--;
 	}
-	return ((unsigned char) s1[i] - (unsigned char) s2[i]);
+	if (n == 0)
+		return (0);
+	return ((unsigned char) s1[i1] - (unsigned char) s2[i2]);
 }
 
-int correct_map(int argc, char **argv, t_game ***map, int y_len, int x_len)
+
+int correct_map(int argc, char **argv, t_data *data)
 {
-	t_game **cpy ;
+	t_game		**cpy;
+	char		*str;
 
 	if (argc != 2)
 		fail("more than 1 arg\n");
 	else if (reverse_strncmp(argv[1], ".ber", 4) != 0)
 		fail("not a .ber map\n");
-	read_map(argv[1]);
-	calc_len(argv[1], x_len, y_len);
-	parse(argv[1], x_len, y_len);
-	if (wall_correct(map, y_len, x_len) == 1)
+	str = read_map(argv[1]);
+	calc_len(str, &data->x_lenm, &data->y_lenm);
+	data->map = parse(str, data->x_lenm, data->y_lenm);
+	if (wall_correct(data->map, data->y_lenm, data->x_lenm) == 1)
 		fail("not enough walls\n");
-	else if (only_one_element(map, x_len, y_len, PLAYER)
-	|| only_one_element(map, x_len, y_len, EXIT) != 0)
+	else if (only_one_element(data->map, data->x_lenm, data->y_lenm, PLAYER)
+	|| only_one_element(data->map, data->x_lenm, data->y_lenm, EXIT) != 0)
 		fail("more than 1 door/player\n");
-	cpy = copy_map(map, y_len, x_len);
-	floodfill(cpy, x_len, y_len,0, 0);
-	if (is_map_empty(cpy, y_len, x_len, COIN) != 0)
+	cpy = copy_map(data->map, data->y_lenm, data->x_lenm);
+	floodfill(cpy, data->x_lenm, data->y_lenm, 0, 0);
+	if (is_map_empty(cpy, data->y_lenm, data->x_lenm, COIN) != 0)
 		fail("coin\n");
-	else if (is_map_empty(cpy, y_len, x_len, EXIT) != 0)
+	else if (is_map_empty(cpy, data->y_lenm, data->x_lenm, EXIT) != 0)
 		fail("exit\n");
-	else if (is_map_empty(cpy,y_len, x_len, PLAYER) != 0)
+	else if (is_map_empty(cpy, data->y_lenm, data->x_lenm, PLAYER) != 0)
 		fail("player\n");
 	return (0);
 }
 
-void	*print_map(t_data *data, t_game **map, int x_len, int y_len)
+void print_map(t_data *data, int y_len, int x_len)
 {
 	int y;
+	int x;
+
 	y = 0;
 	while (y > y_len)
 	{
 		x = 0;
 		while (x > x_len)
 		{
-			if (map[x][y] == FLOOR)
+			if (data->map[y][x] == FLOOR)
 				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
-			else if (map[x][y]) == WALL)
+			else if (data->map[y][x] == WALL)
 				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
-			else if (map[x][y] == COIN)
+			else if (data->map[y][x] == COIN)
 				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
-			else if (map[x][y] == EXIT)
+			else if (data->map[y][x] == EXIT)
 				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
-			else if (map[x][y] == PLAYER)
+			else if (data->map[y][x] == PLAYER)
 				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
 			y++;
 		}
@@ -270,15 +280,14 @@ void	*print_map(t_data *data, t_game **map, int x_len, int y_len)
 	}
 }
 
-fonction print map genre y_len x 64
-keyhook fonction
+/*keyhook fonction
 {
 	if (map[y][x] == COIN) press touche E ????????????????????????????????????????????
 		map[x][y] == FLOOR
 }
-//void keypad(t_game )
+void keypad(t_game )
 {
-    if (key == KEY_W)
+   if (key == KEY_W)
 		pla = player[y + 1][x];
     else if (key == KEY_S)
 		player = player[y - 1][x];
@@ -288,7 +297,7 @@ keyhook fonction
 		player = player[y][x + 1];
 	else if (key == E) ???????????????????????????????????????????????????????????????
 return (0);
-}
+}*/
 
 int	 get_xpm(void *mlx, t_image *image, char *path_name)
 {
@@ -299,7 +308,7 @@ int	 get_xpm(void *mlx, t_image *image, char *path_name)
 	return (0);
 }
 
-int	get_load_image(t_data *data, int x, int y)
+int	get_load_image(t_data *data)
 {
 	if (get_xpm(data->mlx, &data->asset.floor, "./assets/floor.xpm") != 0
 		|| get_xpm(data->mlx, &data->asset.wall, "./assets/wall.xpm") != 0
@@ -317,14 +326,14 @@ int	main(int argc, char **argv)
 	data.mlx = mlx_init();
 	if (data.mlx == NULL)
 		fail("error init mlx");
-	ft_correct_map(argc, argv, map, y_len, x_len);
+	correct_map(argc, argv, &data);
 	data.mlx_win = mlx_new_window(data.mlx, HEIGHT, WIDTH, "so_long");
 	if (data.mlx_win == NULL)
 		fail("error window creation");
-	mlx_hook(data.mlx_win, ON_DESTROY, 0, close_win, &data);//pour X la fenetre
-	mlx_hook(data.mlx_win, )//pour exit 
-	get_load_image(data, x, y);
-
+	//mlx_hook(data.mlx_win, ON_DESTROY, 0, ???, &data);//pour X la fenetre
+	//mlx_hook(data.mlx_win, )//pour exit 
+	get_load_image(&data);
+	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);
 	mlx_destroy_image(data.mlx, data.image);
 	mlx_destroy_window(data.mlx, data.mlx_win);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/15 12:21:15 by Probook          ###   ########.fr       */
+/*   Updated: 2023/06/15 14:38:12 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,15 @@ typedef struct	s_asset {
 	t_image	player;
 } t_asset;
 
+typedef enum e_game {
+	FLOOR,
+	WALL,
+	COIN,
+	EXIT,
+	PLAYER,
+	IS_ENTRY,
+}	t_game;
+
 typedef struct s_data {
 	void	*mlx;
 	void	*mlx_win;
@@ -49,16 +58,12 @@ typedef struct s_data {
 	int		line_len;
 	int		endian;
 	void	*image;
+	t_game	**map;
+	int		x_lenm;
+	int		y_lenm;
 }			t_data;
 
-typedef enum e_game {
-	FLOOR,
-	WALL,
-	COIN,
-	EXIT,
-	PLAYER,
-	IS_ENTRY,
-}	t_game;
+
 
 typedef enum e_key {
 	KEY_W,
