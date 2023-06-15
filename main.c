@@ -6,7 +6,7 @@
 /*   By: Probook <Probook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/14 16:30:29 by Probook          ###   ########.fr       */
+/*   Updated: 2023/06/15 12:21:17 by Probook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ t_game **copy_map(t_game **map, int y_len, int x_len)
 	y = 0;
 	while (y < y_len)
 	{
-	
 		cpy[y] = ft_calloc(sizeof(t_game *), x_len);
 		ft_memcpy(cpy[y], map[y], x_len);
 		y++;
@@ -246,6 +245,31 @@ int correct_map(int argc, char **argv, t_game ***map, int y_len, int x_len)
 	return (0);
 }
 
+void	*print_map(t_data *data, t_game **map, int x_len, int y_len)
+{
+	int y;
+	y = 0;
+	while (y > y_len)
+	{
+		x = 0;
+		while (x > x_len)
+		{
+			if (map[x][y] == FLOOR)
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+			else if (map[x][y]) == WALL)
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+			else if (map[x][y] == COIN)
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+			else if (map[x][y] == EXIT)
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+			else if (map[x][y] == PLAYER)
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+			y++;
+		}
+		x++;
+	}
+}
+
 fonction print map genre y_len x 64
 keyhook fonction
 {
@@ -299,7 +323,8 @@ int	main(int argc, char **argv)
 		fail("error window creation");
 	mlx_hook(data.mlx_win, ON_DESTROY, 0, close_win, &data);//pour X la fenetre
 	mlx_hook(data.mlx_win, )//pour exit 
-	mlx_put_image_to_window(data.mlx, data.mlx_win, data.asset.coin.image, 0, 0);
+	get_load_image(data, x, y);
+
 	mlx_loop(data.mlx);
 	mlx_destroy_image(data.mlx, data.image);
 	mlx_destroy_window(data.mlx, data.mlx_win);
