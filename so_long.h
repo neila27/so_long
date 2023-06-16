@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/16 17:55:13 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/16 19:03:13 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,12 @@ typedef struct s_data {
 
 
 typedef enum e_key {
-	KEY_W,
-	KEY_S,
-	KEY_A,
-	KEY_D,
+	KEY_A = 0,
+	KEY_S = 1,
+	KEY_D = 2,
+	KEY_W = 13,
 	ON_DESTROY = 17,
+	KEY_SPACE = 49,
 }	t_key;
 
 #endif

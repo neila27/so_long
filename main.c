@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/16 18:07:30 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/16 19:03:15 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ t_game **parse(char *str, int x, int y, t_data *data)
             else if (*str == 'P')
             {
                 res[i][z] = PLAYER;
-                data->player_x = y;
                 data->player_y = i;
+                data->player_x = z;
             }
             else if (*str == 'C')
                 res[i][z] = COIN;
@@ -238,7 +238,7 @@ int correct_map(int argc, char **argv, t_data *data)
 		fail("not a .ber map\n");
 	str = read_map(argv[1]);
 	calc_len(str, &data->x_lenm, &data->y_lenm);
-	data->map = parse(str, data->x_lenm, data->y_lenm);
+	data->map = parse(str, data->x_lenm, data->y_lenm, data);
 	if (wall_correct(data->map, data->y_lenm, data->x_lenm) == 1)
 		fail("not enough walls\n");
 	else if (only_one_element(data->map, data->x_lenm, data->y_lenm, PLAYER)
@@ -280,52 +280,48 @@ void print_map(t_data *data, int y_len, int x_len)
 	}
 }
 
-void keypad(t_data *data)
+
+
+int keypad(int keypress, t_data *data)
 {
+	printf("%d\n", keypress);
    if (keypress == KEY_W)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
-		data->player_x++;
+		data->player_y--;
 		data->map[data->player_y][data->player_x] = PLAYER;
-		print_map(&data, data->y_lenm, data->x_lenm);
 	}
     else if (keypress == KEY_S)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
-		data->player_x++;
+		data->player_y++;
 		data->map[data->player_y][data->player_x] = PLAYER;
-		print_map(&data, data->y_lenm, data->x_lenm);
 	}
     else if (keypress == KEY_A)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
-		data->player_x++;
+		data->player_x--;
 		data->map[data->player_y][data->player_x] = PLAYER;
-		print_map(&data, data->y_lenm, data->x_lenm);
 	}
     else if (keypress == KEY_D)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
 		data->player_x++;
-		data->map[data->player_y][data->player_x] = PLAYER;
-		print_map(&data, data->y_lenm, data->x_lenm);
+		data->map[data->player_y][data->player_x] = PLAYER;	
 	}
-	else if (keypress == KEY_espace)
-		collect_coin(&data, data->y_lenm, data->x_lenm);
+	//else if (keypress == KEY_SPACE)
+		//collect_coin(&data, data->y_lenm, data->x_lenm);
+	print_map(data, data->y_lenm, data->x_lenm);
 return (0);
 }
 
-void	collect_coin(t_data *data, int y, int x)
-{
-	int coin;
+// nbr de deplacement 
 
-	coin == 0;
-	if (data->map[y][x] == COIN && keypress == ??)
-		{
-			mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
-			coin++;
-		}
-}
+// void	collect_coin(t_data *data, int y, int x)
+// { 
+//	if (data->map[y][x] == COIN && KEY_SPACE)
+// 		mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
+// }
 
 void	end_of_game(t_data *data, int x, int y)
 {
@@ -366,11 +362,10 @@ int	main(int argc, char **argv)
 	data.mlx_win = mlx_new_window(data.mlx, data.x_lenm * 64, data.y_lenm *  64, "so_long"); 
 	if (data.mlx_win == NULL)
 		fail("error window creation");
-	//mlx_hook(data.mlx_win, ON_DESTROY, 0, ???, &data);//pour X la fenetre
-	//mlx_hook(data.mlx_win, )//pour exit 
+	mlx_hook(data.mlx_win, 2, 1L << 0, keypad, (void *)&data);
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);
-	end_of_game(&data, data.x_lenm, data.y_lenm);
+	//end_of_game(&data, data.x_lenm, data.y_lenm);
 	return (0);
 }
