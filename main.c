@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/16 16:21:55 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/16 18:07:30 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,34 +70,38 @@ void calc_len(char *str, int *x, int *y)
 	(*y)++;
 }
 
-t_game **parse(char *str, int x, int y)
+t_game **parse(char *str, int x, int y, t_data *data)
 {
-	t_game **res = ft_calloc(sizeof(t_game *), y);
-	int z;
-	int i  = 0;
-	while (i < y)
-	{
-		res[i] = ft_calloc(sizeof(t_game), x);
-		z = 0;
-		while(z < x)
-		{
-			if (*str == '0')
-				res[i][z] = FLOOR;
-			else if (*str == '1')
-				res[i][z] = WALL;
-			else if (*str == 'P')
-				res[i][z] = PLAYER;
-			else if (*str == 'C')
-				res[i][z] = COIN;
-			else if (*str == 'E')
-				res[i][z] = EXIT;
-			z++;
-			str++;
-		}
-		str++;
-		i++;
-	}
-	return (res);
+    t_game **res = ft_calloc(sizeof(t_game *), y);
+    int z;
+    int i  = 0;
+    while (i < y)
+    {
+        res[i] = ft_calloc(sizeof(t_game), x);
+        z = 0;
+        while(z < x)
+        {
+            if (*str == '0')
+                res[i][z] = FLOOR;
+            else if (*str == '1')
+                res[i][z] = WALL;
+            else if (*str == 'P')
+            {
+                res[i][z] = PLAYER;
+                data->player_x = y;
+                data->player_y = i;
+            }
+            else if (*str == 'C')
+                res[i][z] = COIN;
+            else if (*str == 'E')
+                res[i][z] = EXIT;
+            z++;
+            str++;
+        }
+        str++;
+        i++;
+    }
+    return (res);
 }
 
 void floodfill(t_game **game, int x_len, int y_len, int x, int y)
@@ -259,42 +263,78 @@ void print_map(t_data *data, int y_len, int x_len)
 		while (x < x_len)
 		{
 			if (data->map[y][x] == FLOOR)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == WALL)
 				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.wall.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == COIN)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.coin.image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE) &&
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.coin.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == EXIT)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.exit.image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.exit.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == PLAYER)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.player.image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE) &&
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.player.image, x * TILE_SIZE, y * TILE_SIZE);
 			x++;
 		}
 		y++;
 	}
 }
 
-/*keyhook fonction
+void keypad(t_data *data)
 {
-	if (map[y][x] == COIN) press touche E ????????????????????????????????????????????
-		map[x][y] == FLOOR
-		// ausii le faire quand je touche x ou exit sur l'interface
-}
-void keypad(t_game )
-{
-   if (key == KEY_W)
-		pla = player[y + 1][x];
-    else if (key == KEY_S)
-		player = player[y - 1][x];
-    else if (key == KEY_A)
-		player = player[y][x - 1];
-    else if (key == KEY_D)
-		player = player[y][x + 1];
-	else if (key == E) ???????????????????????????????????????????????????????????????
+   if (keypress == KEY_W)
+	{
+		data->map[data->player_y][data->player_x] = FLOOR;
+		data->player_x++;
+		data->map[data->player_y][data->player_x] = PLAYER;
+		print_map(&data, data->y_lenm, data->x_lenm);
+	}
+    else if (keypress == KEY_S)
+	{
+		data->map[data->player_y][data->player_x] = FLOOR;
+		data->player_x++;
+		data->map[data->player_y][data->player_x] = PLAYER;
+		print_map(&data, data->y_lenm, data->x_lenm);
+	}
+    else if (keypress == KEY_A)
+	{
+		data->map[data->player_y][data->player_x] = FLOOR;
+		data->player_x++;
+		data->map[data->player_y][data->player_x] = PLAYER;
+		print_map(&data, data->y_lenm, data->x_lenm);
+	}
+    else if (keypress == KEY_D)
+	{
+		data->map[data->player_y][data->player_x] = FLOOR;
+		data->player_x++;
+		data->map[data->player_y][data->player_x] = PLAYER;
+		print_map(&data, data->y_lenm, data->x_lenm);
+	}
+	else if (keypress == KEY_espace)
+		collect_coin(&data, data->y_lenm, data->x_lenm);
 return (0);
-}*/
+}
 
-//game terminé quand player[][] == exit[][] 
+void	collect_coin(t_data *data, int y, int x)
+{
+	int coin;
+
+	coin == 0;
+	if (data->map[y][x] == COIN && keypress == ??)
+		{
+			mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
+			coin++;
+		}
+}
+
+void	end_of_game(t_data *data, int x, int y)
+{
+	if (data->map[y][x] == PLAYER && data->map[y][x] && is_map_empty != 1)
+	{
+		mlx_destroy_image(data->mlx, data->image);
+		mlx_destroy_window(data->mlx, data->mlx_win);
+	}
+}
 
 int	 get_xpm(void *mlx, t_image *image, char *path_name)
 {
@@ -323,7 +363,7 @@ int	main(int argc, char **argv)
 	if (data.mlx == NULL)
 		fail("error init mlx");
 	correct_map(argc, argv, &data);
-	data.mlx_win = mlx_new_window(data.mlx, HEIGHT, WIDTH, "so_long");
+	data.mlx_win = mlx_new_window(data.mlx, data.x_lenm * 64, data.y_lenm *  64, "so_long"); 
 	if (data.mlx_win == NULL)
 		fail("error window creation");
 	//mlx_hook(data.mlx_win, ON_DESTROY, 0, ???, &data);//pour X la fenetre
@@ -331,7 +371,6 @@ int	main(int argc, char **argv)
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);
-	//mlx_destroy_image(data.mlx, data.image);
-	//mlx_destroy_window(data.mlx, data.mlx_win);
+	end_of_game(&data, data.x_lenm, data.y_lenm);
 	return (0);
 }

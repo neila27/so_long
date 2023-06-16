@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/15 14:38:12 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/16 17:55:13 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ typedef struct s_data {
 	int		line_len;
 	int		endian;
 	void	*image;
+	int 	player_x;
+	int 	player_y;
 	t_game	**map;
 	int		x_lenm;
 	int		y_lenm;
