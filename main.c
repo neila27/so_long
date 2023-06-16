@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/15 15:28:49 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/16 16:20:34 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,11 +133,10 @@ int	is_map_empty(t_game **map, int y_len, int x_len, t_game element)
 	int counter;
 
 	x = 0;
-	y = 0;
 	counter = 0;
 	while (x < x_len)
 	{
-		x = 0;
+		y = 0;
 		while(y < y_len)
 		{
 			if (map[y][x] == element)
@@ -184,7 +183,6 @@ int only_one_element(t_game **map, int x_len, int y_len, t_game element)
 	int counter;
 
 	x = 0;
-	y = 0;
 	counter = 0;
 	while (x < x_len)
 	{
@@ -245,11 +243,7 @@ int correct_map(int argc, char **argv, t_data *data)
 	cpy = copy_map(data->map, data->y_lenm, data->x_lenm);
 	floodfill(cpy, data->x_lenm, data->y_lenm, 0, 0);
 	if (is_map_empty(cpy, data->y_lenm, data->x_lenm, COIN) != 0)
-		fail("coin\n");
-	else if (is_map_empty(cpy, data->y_lenm, data->x_lenm, EXIT) != 0)
-		fail("exit\n");
-	else if (is_map_empty(cpy, data->y_lenm, data->x_lenm, PLAYER) != 0)
-		fail("player\n");
+		fail("collect all the coins pls\n");
 	return (0);
 }
 
@@ -259,24 +253,24 @@ void print_map(t_data *data, int y_len, int x_len)
 	int x;
 
 	y = 0;
-	while (y > y_len)
+	while (y < y_len)
 	{
 		x = 0;
-		while (x > x_len)
+		while (x < x_len)
 		{
 			if (data->map[y][x] == FLOOR)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == WALL)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.wall.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == COIN)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.coin.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == EXIT)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
+				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.exit.image, x * TILE_SIZE, y * TILE_SIZE);
 			else if (data->map[y][x] == PLAYER)
-				mlx_put_image_to_window(data->mlx, data->mlx_win, data->image, x * TILE_SIZE, y * TILE_SIZE);
-			y++;
+				mlx_put_image_to_window(data->mlx, data->mlx_win, &data->asset.player.image, x * TILE_SIZE, y * TILE_SIZE);
+			x++;
 		}
-		x++;
+		y++;
 	}
 }
 
@@ -284,6 +278,7 @@ void print_map(t_data *data, int y_len, int x_len)
 {
 	if (map[y][x] == COIN) press touche E ????????????????????????????????????????????
 		map[x][y] == FLOOR
+		// ausii le faire quand je touche x ou exit sur l'interface
 }
 void keypad(t_game )
 {
@@ -299,12 +294,13 @@ void keypad(t_game )
 return (0);
 }*/
 
+//game terminé quand player[][] == exit[][] 
+
 int	 get_xpm(void *mlx, t_image *image, char *path_name)
 {
 	image->image = mlx_xpm_file_to_image(mlx, path_name, &image->x_len, &image->y_len);
 	if (!image->image)
 		return (1);
-	
 	return (0);
 }
 
@@ -335,7 +331,7 @@ int	main(int argc, char **argv)
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);
-	mlx_destroy_image(data.mlx, data.image);
-	mlx_destroy_window(data.mlx, data.mlx_win);
+	//mlx_destroy_image(data.mlx, data.image);
+	//mlx_destroy_window(data.mlx, data.mlx_win);
 	return (0);
 }
