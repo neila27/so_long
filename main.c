@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/19 16:54:50 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:20:36 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_game	**parse(char *str, int x, int y, t_data *data)
 	int		z;
 	int		i;
 
-	**res = ft_calloc(sizeof(t_game *), y);
+	res = ft_calloc(sizeof(t_game *), y);
 	i = 0;
 	while (i < y)
 	{
@@ -293,10 +293,15 @@ void print_map(t_data *data, int y_len, int x_len)
 	}
 }
 
+int	kill_game(void)
+{
+	exit (0);
+	return (0);
+}
+
 int	keypad(int keypress, t_data *data)
 {
 	int		foo;
-	char	tmp;
 
 	foo = 0;
 	if (keypress == KEY_W && data->map[data->player_y - 1]
@@ -331,9 +336,13 @@ int	keypad(int keypress, t_data *data)
 		data->map[data->player_y][data->player_x] = PLAYER;
 		foo++;
 	}
+	else if (keypress == KEY_DESTROY)
+		kill_game();
+	else if (keypress == KEY_ESCAPE)
+		kill_game();
 	if (foo)
 	{
-		tmp = ft_itoa(++data->cnt_step);
+		char * tmp = ft_itoa(++data->cnt_step);
 		ft_putstr_fd(tmp, 1);
 		ft_putchar_fd('\n', 1);
 		free (tmp);
@@ -362,12 +371,6 @@ int	get_load_image(t_data *data)
 	return (0);
 }
 
-int	kill_game(void)
-{
-	exit (0);
-	return (0);
-}
-
 int	main(int argc, char **argv)
 {
 	t_data	data;
@@ -382,8 +385,8 @@ int	main(int argc, char **argv)
 	if (data.mlx_win == NULL)
 		fail("error window creation");
 	mlx_hook(data.mlx_win, 2, 1L << 0, keypad, (void *)&data);
-	mlx_hook(data.mlx_win, 0, KEY_DESTROY, &kill_game, &data);
-	mlx_hook(data.mlx_win, 0, KEY_ESCAPE, &kill_game, &data);
+	/*mlx_hook(data.mlx_win, 0, KEY_DESTROY, &kill_game, &data);
+	mlx_hook(data.mlx_win, 0, KEY_ESCAPE, &kill_game, &data);*/
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);

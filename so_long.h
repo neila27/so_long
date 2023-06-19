@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/19 16:54:51 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:11:52 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_image {
 	int		color;
 } t_image;
 
-typedef struct	s_asset {
+typedef struct s_asset {
 	t_image	floor;
 	t_image	wall;
 	t_image	coin;
