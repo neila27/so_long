@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/16 19:03:15 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:34:47 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ char *read_map(char *map)
 	fd = open(map, O_RDONLY);
 	if (fd < 0)
 		return (NULL);
-	int nbr = read(fd, buff, 255);
+	int nbr = read(fd, buff, 254);
+	buff[nbr] = 0;
 	if (nbr <= 0)
 	{
 		close(fd);
@@ -37,7 +38,8 @@ char *read_map(char *map)
 	while (nbr)
 	{
 		res = ft_strjoin(res, buff);
-		nbr = read(fd, buff, 255);
+		nbr = read(fd, buff, 254);
+		buff[nbr] = 0;
 	}
 	close(fd);
 	return (res);
@@ -92,7 +94,7 @@ t_game **parse(char *str, int x, int y, t_data *data)
                 data->player_x = z;
             }
             else if (*str == 'C')
-                res[i][z] = COIN;
+				res[i][z] = COIN;
             else if (*str == 'E')
                 res[i][z] = EXIT;
             z++;
@@ -136,22 +138,22 @@ int	is_map_empty(t_game **map, int y_len, int x_len, t_game element)
 	int	y;
 	int counter;
 
-	x = 0;
+	y = 0;
 	counter = 0;
-	while (x < x_len)
+	while (y < y_len)
 	{
-		y = 0;
-		while(y < y_len)
+		x = 0;
+		while(x < x_len)
 		{
 			if (map[y][x] == element)
 				counter ++;
-			y++;
+			x++;
 		}
-		x++;
+		y++;
 	}
-	if (counter != 0)
-			return (1);
-	return (0);
+	if (counter)
+			return (0);
+	return (1);
 }
 
 int	wall_correct(t_game **map, int y_len, int x_len)
@@ -246,8 +248,8 @@ int correct_map(int argc, char **argv, t_data *data)
 		fail("more than 1 door/player\n");
 	cpy = copy_map(data->map, data->y_lenm, data->x_lenm);
 	floodfill(cpy, data->x_lenm, data->y_lenm, 0, 0);
-	if (is_map_empty(cpy, data->y_lenm, data->x_lenm, COIN) != 0)
-		fail("collect all the coins pls\n");
+	if (is_map_empty(data->map, data->y_lenm, data->x_lenm, COIN))
+		fail("you need at least 1 coin\n");
 	return (0);
 }
 
@@ -280,56 +282,49 @@ void print_map(t_data *data, int y_len, int x_len)
 	}
 }
 
-
-
 int keypad(int keypress, t_data *data)
 {
-	printf("%d\n", keypress);
-   if (keypress == KEY_W)
+	int foo;
+
+	foo = 0;
+	if (keypress == KEY_W && data->map[data->player_y - 1][data->player_x] != WALL)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
 		data->player_y--;
 		data->map[data->player_y][data->player_x] = PLAYER;
+		data->cnt_step++;
+		foo++;
 	}
-    else if (keypress == KEY_S)
+    else if (keypress == KEY_S && data->map[data->player_y + 1][data->player_x] != WALL)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
 		data->player_y++;
 		data->map[data->player_y][data->player_x] = PLAYER;
+		foo++;
 	}
-    else if (keypress == KEY_A)
+    else if (keypress == KEY_A && data->map[data->player_y][data->player_x - 1] != WALL)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
 		data->player_x--;
 		data->map[data->player_y][data->player_x] = PLAYER;
+		foo++;
 	}
-    else if (keypress == KEY_D)
+    else if (keypress == KEY_D && data->map[data->player_y][data->player_x + 1] != WALL)
 	{
 		data->map[data->player_y][data->player_x] = FLOOR;
 		data->player_x++;
 		data->map[data->player_y][data->player_x] = PLAYER;	
+		foo++;
 	}
-	//else if (keypress == KEY_SPACE)
-		//collect_coin(&data, data->y_lenm, data->x_lenm);
-	print_map(data, data->y_lenm, data->x_lenm);
-return (0);
-}
-
-// nbr de deplacement 
-
-// void	collect_coin(t_data *data, int y, int x)
-// { 
-//	if (data->map[y][x] == COIN && KEY_SPACE)
-// 		mlx_put_image_to_window(data->mlx, data->mlx_win, data->asset.floor.image, x * TILE_SIZE, y * TILE_SIZE);
-// }
-
-void	end_of_game(t_data *data, int x, int y)
-{
-	if (data->map[y][x] == PLAYER && data->map[y][x] && is_map_empty != 1)
+	if (foo)
 	{
-		mlx_destroy_image(data->mlx, data->image);
-		mlx_destroy_window(data->mlx, data->mlx_win);
+		char * tmp = ft_itoa(++data->cnt_step);
+		ft_putstr_fd(tmp, 1);
+		ft_putchar_fd('\n', 1);
+		free (tmp);
 	}
+	print_map(data, data->y_lenm, data->x_lenm);
+	return (0);
 }
 
 int	 get_xpm(void *mlx, t_image *image, char *path_name)
@@ -351,10 +346,17 @@ int	get_load_image(t_data *data)
 	return (0);
 }
 
+int	kill_game(void)
+{
+	exit (0);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	data;
 
+	data.cnt_step = 0;
 	data.mlx = mlx_init();
 	if (data.mlx == NULL)
 		fail("error init mlx");
@@ -363,9 +365,17 @@ int	main(int argc, char **argv)
 	if (data.mlx_win == NULL)
 		fail("error window creation");
 	mlx_hook(data.mlx_win, 2, 1L << 0, keypad, (void *)&data);
+	mlx_hook(data.mlx_win, KEY_DESTROY, 0, &kill_game, &data);
+	mlx_hook(data.mlx_win, KEY_ESCAPE, 0, &kill_game, &data);
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);
-	//end_of_game(&data, data.x_lenm, data.y_lenm);
 	return (0);
 }
+
+//escape 
+//aller sur la porte 
+
+//leaks
+//norme
+//site_web

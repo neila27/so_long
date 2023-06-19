@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/16 19:03:13 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:34:48 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,17 @@ typedef struct s_data {
 	t_game	**map;
 	int		x_lenm;
 	int		y_lenm;
+	int		cnt_step;
+
 }			t_data;
-
-
 
 typedef enum e_key {
 	KEY_A = 0,
 	KEY_S = 1,
 	KEY_D = 2,
 	KEY_W = 13,
-	ON_DESTROY = 17,
-	KEY_SPACE = 49,
+	KEY_DESTROY = 17,
+	KEY_ESCAPE = 53,
 }	t_key;
 
 #endif
