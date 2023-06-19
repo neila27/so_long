@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/19 17:20:36 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:22:00 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,10 +336,6 @@ int	keypad(int keypress, t_data *data)
 		data->map[data->player_y][data->player_x] = PLAYER;
 		foo++;
 	}
-	else if (keypress == KEY_DESTROY)
-		kill_game();
-	else if (keypress == KEY_ESCAPE)
-		kill_game();
 	if (foo)
 	{
 		char * tmp = ft_itoa(++data->cnt_step);
@@ -385,8 +381,8 @@ int	main(int argc, char **argv)
 	if (data.mlx_win == NULL)
 		fail("error window creation");
 	mlx_hook(data.mlx_win, 2, 1L << 0, keypad, (void *)&data);
-	/*mlx_hook(data.mlx_win, 0, KEY_DESTROY, &kill_game, &data);
-	mlx_hook(data.mlx_win, 0, KEY_ESCAPE, &kill_game, &data);*/
+	mlx_hook(data.mlx_win, 0, KEY_DESTROY, &kill_game, &data);
+	mlx_hook(data.mlx_win, 0, KEY_ESCAPE, &kill_game, &data);
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);
