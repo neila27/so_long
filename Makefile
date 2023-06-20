@@ -1,11 +1,16 @@
 NAME		= so_long
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS		= -Wall -Wextra -Werror -g3 #-fsanitize=address
 RM			= rm -rf
 
 OBJ			= $(SRC:.c=.o)
 
 SRC =	main.c \
+		utils.c \
+		utils2.c \
+		utils3.c \
+		utils4.c \
+		utils5.c \
 
 all:	$(NAME)
 

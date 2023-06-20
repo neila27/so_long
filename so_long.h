@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/19 17:21:59 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/20 16:53:43 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef struct s_image {
 	int		y_len;
 	void	*image;
 	int		color;
-} t_image;
+}			t_image;
 
 typedef struct s_asset {
 	t_image	floor;
@@ -38,7 +38,7 @@ typedef struct s_asset {
 	t_image	coin;
 	t_image	exit;
 	t_image	player;
-} t_asset;
+}	t_asset;
 
 typedef enum e_game {
 	FLOOR,
@@ -59,7 +59,7 @@ typedef struct s_data {
 	int		endian;
 	void	*image;
 	int		player_x;
-	int 	player_y;
+	int		player_y;
 	t_game	**map;
 	int		x_lenm;
 	int		y_lenm;
@@ -75,5 +75,29 @@ typedef enum e_key {
 	KEY_DESTROY = 17,
 	KEY_ESCAPE = 53,
 }	t_key;
+
+int		is_map_empty(t_game **map, int y_len, int x_len, t_game element);
+int		wall_correct(t_game **map, int y_len, int x_len);
+int		only_one_element(t_game **map, int x_len, int y_len, t_game element);
+int		reverse_strncmp(const char *s1, const char *s2, size_t n);
+void	free_map(t_game **map, int y_len);
+
+void	steps_counter(t_data *data);
+int		keypad(int keypress, t_data *data);
+int		get_xpm(void *mlx, t_image *image, char *path_name);
+int		get_load_image(t_data *data);
+int		main(int argc, char **argv);
+
+int		fridge(t_data *data, int y, int x);
+int		up(t_data *data);
+int		down(t_data *data);
+int		left(t_data *data);
+int		right(t_data *data);
+
+int		kill_game(void *data);
+void	fail(char *str);
+char	*read_map(char *map);
+void	calc_len(char *str, int *x, int *y);
+int		coin(t_data *data, int y_len, int x_len);
 
 #endif
