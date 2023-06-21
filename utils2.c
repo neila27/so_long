@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/20 16:23:44 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/21 12:52:02 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	keypad(int keypress, t_data *data)
 	return (0);
 }
 
-int get_xpm(void *mlx, t_image *image, char *path_name)
+int	get_xpm(void *mlx, t_image *image, char *path_name)
 {
 	image->image = mlx_xpm_file_to_image(mlx, path_name, &image->x_len,
 			&image->y_len);
@@ -81,7 +81,7 @@ int	main(int argc, char **argv)
 	if (data.mlx_win == NULL)
 		fail("error window creation");
 	mlx_hook(data.mlx_win, 2, 1L << 0, keypad, (void *)&data);
-	mlx_hook(data.mlx_win, KEY_DESTROY, 1L << 0, kill_game(data), &data);
+	mlx_hook(data.mlx_win, KEY_DESTROY, 1L << 0, kill_game, &data);
 	get_load_image(&data);
 	print_map(&data, data.y_lenm, data.x_lenm);
 	mlx_loop(data.mlx);

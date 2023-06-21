@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/20 16:53:43 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:47:24 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,12 @@
 # include "libft.h"
 # include "mlx.h"
 
-# define HEIGHT 1920 
-# define WIDTH 1080
 # define TILE_SIZE 64
+
+typedef struct s_pos {
+	int		x;
+	int		y;
+}			t_pos;
 
 typedef struct s_image {
 	int		x_len;
@@ -99,5 +102,14 @@ void	fail(char *str);
 char	*read_map(char *map);
 void	calc_len(char *str, int *x, int *y);
 int		coin(t_data *data, int y_len, int x_len);
+
+int		correct_map(int argc, char **argv, t_data *data);
+t_game	**copy_map(t_game **map, int y_len, int x_len);
+void	floodfill(t_data *data, t_game **game, int x, int y);
+t_game	**parse(char *str, int x, int y, t_data *data);
+void	assign_value_parse(t_game *res, char c, t_pos pos, t_data *data);
+
+void	put_image_windows_by_type(t_data *data, t_game type, int y, int x);
+void	print_map(t_data *data, int y_len, int x_len);
 
 #endif

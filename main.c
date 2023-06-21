@@ -6,14 +6,33 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/20 17:46:08 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/21 13:45:03 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+void	assign_value_parse(t_game *res, char c, t_pos pos, t_data *data)
+{
+	if (c == '0')
+		*res = FLOOR;
+	else if (c == '1')
+		*res = WALL;
+	else if (c == 'P')
+	{
+		*res = PLAYER;
+		data->player_y = pos.y;
+		data->player_x = pos.x;
+	}
+	else if (c == 'C')
+		*res = COIN;
+	else if (c == 'E')
+		*res = EXIT;
+}
+
 t_game	**parse(char *str, int x, int y, t_data *data)
 {
+	t_pos	pos;
 	t_game	**res;
 	int		z;
 	int		i;
@@ -23,23 +42,12 @@ t_game	**parse(char *str, int x, int y, t_data *data)
 	while (i < y)
 	{
 		res[i] = ft_calloc(sizeof(t_game), x);
+		pos.y = i;
 		z = 0;
 		while (z < x)
 		{
-			if (*str == '0')
-				res[i][z] = FLOOR;
-			else if (*str == '1')
-				res[i][z] = WALL;
-			else if (*str == 'P')
-			{
-				res[i][z] = PLAYER;
-				data->player_y = i;
-				data->player_x = z;
-			}
-			else if (*str == 'C')
-				res[i][z] = COIN;
-			else if (*str == 'E')
-				res[i][z] = EXIT;
+			pos.x = z;
+			assign_value_parse(&res[i][z], *str, pos, data);
 			z++;
 			str++;
 		}
@@ -56,10 +64,10 @@ void	floodfill(t_data *data, t_game **game, int x, int y)
 		|| game[y][x] == WALL)
 		return ;
 	game[y][x] = IS_ENTRY;
-	floodfill(game, data->x_lenm, data->y_lenm, x, y + 1);
-	floodfill(game, data->x_lenm, data->y_lenm, x, y - 1);
-	floodfill(game, data->x_lenm, data->y_lenm, x - 1, y);
-	floodfill(game, data->x_lenm, data->y_lenm, x + 1, y);
+	floodfill(data, game, x, y + 1);
+	floodfill(data, game, x, y - 1);
+	floodfill(data, game, x - 1, y);
+	floodfill(data, game, x + 1, y);
 }
 
 t_game	**copy_map(t_game **map, int y_len, int x_len)
@@ -99,7 +107,7 @@ int	correct_map(int argc, char **argv, t_data *data)
 	if (is_map_empty(data->map, data->y_lenm, data->x_lenm, COIN) <= 0)
 		fail("no coin\n");
 	cpy = copy_map(data->map, data->y_lenm, data->x_lenm);
-	floodfill(cpy, data->x_lenm, data->y_lenm, data->player_x, data->player_y);
+	floodfill(data, cpy, data->player_x, data->player_y);
 	if (is_map_empty(cpy, data->y_lenm, data->x_lenm, COIN) != 0
 		|| is_map_empty(cpy, data->y_lenm, data->x_lenm, EXIT) != 0)
 		fail("coin/door isn't accessible\n");

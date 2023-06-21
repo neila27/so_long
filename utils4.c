@@ -6,7 +6,7 @@
 /*   By: nmuminov <nmuminov@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 13:10:31 by nmuminov          #+#    #+#             */
-/*   Updated: 2023/06/20 16:34:37 by nmuminov         ###   ########.fr       */
+/*   Updated: 2023/06/21 12:50:25 by nmuminov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ char	*read_map(char *map)
 		buff[nbr] = 0;
 	}
 	close(fd);
-
 	return (res);
 }
 
