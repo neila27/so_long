@@ -14,3 +14,5 @@ Choix de couleurs et de textures : L'utilisation de textures, de sprites et le c
 Programmation en C : Renforcer les compétences en programmation C, en respectant les règles de la norme de l'école.
 Algorithmes basiques : Utilisation d'algorithmes basiques pour la gestion du déplacement du personnage, la recherche de chemins valides, etc.
 
+![solong](https://github.com/neila42/So_long/assets/116641875/761077e4-9518-453b-a16d-21f2753bf7b6)
+(Image de mon projet)
